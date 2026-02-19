@@ -79,25 +79,25 @@ const StaffLayout = () => {
   ];
 
   return (
-    <div className="flex h-screen overflow-hidden bg-slate-950">
+    <div className="flex h-screen overflow-hidden bg-[#f8fafc]">
       {/* Sidebar */}
       <div
         className={`transition-all duration-500 ease-[cubic-bezier(0.34,1.56,0.64,1)] ${isSidebarOpen ? "w-64" : "w-0"} shrink-0`}
       >
         <div
-          className={`h-full bg-slate-900 flex flex-col border-r border-slate-800 overflow-hidden ${isSidebarOpen ? "w-64" : "w-0"}`}
+          className={`h-full bg-white flex flex-col border-r border-slate-100 shadow-sm overflow-hidden ${isSidebarOpen ? "w-64" : "w-0"}`}
         >
-          <div className="p-6 flex items-center gap-3 whitespace-nowrap border-b border-slate-800">
-            <div className="w-10 h-10 bg-violet-600 rounded-xl flex items-center justify-center text-white shadow-lg shadow-violet-900/50 shrink-0">
+          <div className="p-6 flex items-center gap-3 whitespace-nowrap border-b border-slate-100">
+            <div className="w-10 h-10 bg-blue-600 rounded-xl flex items-center justify-center text-white shadow-lg shadow-blue-200 shrink-0">
               <Wrench size={22} />
             </div>
             <div
               className={`transition-all duration-500 ${isSidebarOpen ? "opacity-100" : "opacity-0 -translate-x-4"}`}
             >
-              <h1 className="text-base font-black text-white leading-none">
-                CivicTrack
+              <h1 className="text-base font-black text-slate-900 leading-none">
+                GeoCivic
               </h1>
-              <p className="text-[10px] text-violet-400 font-bold tracking-widest uppercase mt-0.5">
+              <p className="text-[10px] text-blue-500 font-bold tracking-widest uppercase mt-0.5">
                 Field Staff
               </p>
             </div>
@@ -111,7 +111,7 @@ const StaffLayout = () => {
                   key={item.path}
                   to={item.path}
                   className={`flex items-center space-x-3 px-4 py-3 rounded-xl transition-all whitespace-nowrap
-                    ${isActive ? "bg-violet-600 text-white font-bold shadow-lg shadow-violet-900/50" : "text-slate-400 hover:bg-slate-800 hover:text-white"}`}
+                    ${isActive ? "bg-blue-600 text-white font-bold shadow-lg shadow-blue-200" : "text-slate-500 hover:bg-blue-50 hover:text-blue-700"}`}
                 >
                   <span className="shrink-0">{item.icon}</span>
                   <span
@@ -124,18 +124,18 @@ const StaffLayout = () => {
             })}
           </nav>
 
-          <div className="px-4 py-6 border-t border-slate-800">
+          <div className="px-4 py-6 border-t border-slate-100">
             <div className="flex items-center gap-3 px-4 py-3 rounded-xl whitespace-nowrap">
-              <div className="w-9 h-9 rounded-full bg-violet-600/20 border border-violet-500/30 flex items-center justify-center text-violet-400 font-black text-xs shrink-0">
+              <div className="w-9 h-9 rounded-full bg-blue-100 border border-blue-200 flex items-center justify-center text-blue-600 font-black text-xs shrink-0">
                 {userInitial}
               </div>
               <div
                 className={`flex-1 overflow-hidden transition-all ${isSidebarOpen ? "opacity-100" : "opacity-0"}`}
               >
-                <p className="text-xs font-bold text-white truncate">
+                <p className="text-xs font-bold text-slate-900 truncate">
                   {user?.fullName || user?.email?.split("@")[0] || "Staff"}
                 </p>
-                <p className="text-[10px] text-violet-400 font-bold uppercase tracking-widest">
+                <p className="text-[10px] text-blue-500 font-bold uppercase tracking-widest">
                   Field Worker
                 </p>
               </div>
@@ -155,17 +155,17 @@ const StaffLayout = () => {
 
       {/* Main */}
       <main className="flex-1 overflow-auto">
-        <div className="sticky top-0 z-20 bg-slate-950/80 backdrop-blur-md px-8 py-4 flex items-center justify-between border-b border-slate-800/50">
+        <div className="sticky top-0 z-20 bg-[#f8fafc]/80 backdrop-blur-md px-8 py-4 flex items-center justify-between border-b border-slate-100/80">
           <div className="flex items-center gap-4">
             <button
               onClick={() => setIsSidebarOpen(!isSidebarOpen)}
-              className="p-2 text-slate-400 hover:text-violet-400 hover:bg-slate-800 rounded-xl transition-all"
+              className="p-2 text-slate-400 hover:text-blue-600 hover:bg-blue-50 rounded-xl transition-all"
             >
               <PanelLeft size={20} />
             </button>
             <div className="flex items-center gap-2">
-              <Wrench size={16} className="text-violet-400" />
-              <span className="text-white font-black text-sm">
+              <Wrench size={16} className="text-blue-500" />
+              <span className="text-slate-900 font-black text-sm">
                 Field Staff Portal
               </span>
             </div>
@@ -174,22 +174,22 @@ const StaffLayout = () => {
           <div ref={dropdownRef} className="relative">
             <button
               onClick={() => setShowNotifDropdown(!showNotifDropdown)}
-              className={`relative p-2 rounded-xl transition-all ${showNotifDropdown ? "bg-violet-600 text-white" : "text-slate-400 hover:text-violet-400 hover:bg-slate-800"}`}
+              className={`relative p-2 rounded-xl transition-all ${showNotifDropdown ? "bg-blue-600 text-white" : "text-slate-400 hover:text-blue-600 hover:bg-blue-50"}`}
             >
               <Bell size={20} />
               {unreadCount > 0 && (
-                <span className="absolute top-1.5 right-1.5 w-4 h-4 bg-red-500 text-white text-[9px] font-black rounded-full flex items-center justify-center ring-2 ring-slate-950">
+                <span className="absolute top-1.5 right-1.5 w-4 h-4 bg-red-500 text-white text-[9px] font-black rounded-full flex items-center justify-center ring-2 ring-white">
                   {unreadCount}
                 </span>
               )}
             </button>
             {showNotifDropdown && (
-              <div className="absolute right-0 mt-3 w-80 bg-slate-900 border border-slate-700 rounded-[2rem] shadow-2xl shadow-black/50 z-50 overflow-hidden">
-                <div className="p-5 border-b border-slate-800 flex justify-between items-center">
-                  <h3 className="font-black text-xs uppercase tracking-[0.2em] text-slate-200">
+              <div className="absolute right-0 mt-3 w-80 bg-white border border-slate-100 rounded-[2rem] shadow-xl shadow-slate-200/60 z-50 overflow-hidden">
+                <div className="p-5 border-b border-slate-100 flex justify-between items-center bg-slate-50/50">
+                  <h3 className="font-black text-xs uppercase tracking-[0.2em] text-slate-800">
                     Notifications
                   </h3>
-                  <span className="bg-violet-900/50 text-violet-300 text-[10px] font-black px-2 py-0.5 rounded-full border border-violet-700/50">
+                  <span className="bg-blue-100 text-blue-600 text-[10px] font-black px-2 py-0.5 rounded-full border border-blue-200">
                     {unreadCount} New
                   </span>
                 </div>
@@ -202,20 +202,20 @@ const StaffLayout = () => {
                       </p>
                     </div>
                   ) : (
-                    <div className="divide-y divide-slate-800">
+                    <div className="divide-y divide-slate-50">
                       {notifications.map((notif) => (
                         <div
                           key={notif.id}
-                          className={`p-4 flex gap-3 group relative ${!notif.isRead ? "bg-violet-900/10" : ""}`}
+                          className={`p-4 flex gap-3 group relative ${!notif.isRead ? "bg-blue-50/30" : ""}`}
                         >
                           <div
-                            className={`w-9 h-9 rounded-xl flex items-center justify-center shrink-0 ${!notif.isRead ? "bg-violet-900/50 text-violet-400" : "bg-slate-800 text-slate-500"}`}
+                            className={`w-9 h-9 rounded-xl flex items-center justify-center shrink-0 ${!notif.isRead ? "bg-blue-100 text-blue-600" : "bg-slate-100 text-slate-400"}`}
                           >
                             <Clock size={16} />
                           </div>
                           <div className="flex-1 min-w-0 pr-6">
                             <p
-                              className={`text-xs leading-relaxed ${!notif.isRead ? "text-slate-200 font-semibold" : "text-slate-400"}`}
+                              className={`text-xs leading-relaxed ${!notif.isRead ? "text-slate-900 font-semibold" : "text-slate-500"}`}
                             >
                               {notif.message}
                             </p>
@@ -223,7 +223,7 @@ const StaffLayout = () => {
                           {!notif.isRead && (
                             <button
                               onClick={() => handleMarkRead(notif.id)}
-                              className="opacity-0 group-hover:opacity-100 absolute right-3 top-1/2 -translate-y-1/2 p-1.5 bg-violet-600 text-white rounded-lg transition-all"
+                              className="opacity-0 group-hover:opacity-100 absolute right-3 top-1/2 -translate-y-1/2 p-1.5 bg-blue-600 text-white rounded-lg transition-all"
                             >
                               <CheckSquare size={12} />
                             </button>

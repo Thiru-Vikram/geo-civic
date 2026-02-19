@@ -128,7 +128,7 @@ const Login = () => {
 
         {/* Footer Link */}
         <p className="text-center text-slate-500 font-medium">
-          New to CivicTrack?{" "}
+          New to GeoCivic?{" "}
           <Link
             to="/register"
             className="text-emerald-600 font-bold hover:text-emerald-700 transition-colors border-b-2 border-emerald-100 hover:border-emerald-600 pb-0.5"

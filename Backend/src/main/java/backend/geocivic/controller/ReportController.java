@@ -153,11 +153,11 @@ public class ReportController {
 
             report.setResolvedLatitude(staffLat);
             report.setResolvedLongitude(staffLng);
-            report.setStatus("Resolved");
+            report.setStatus("PendingVerification");
             Report saved = reportRepository.save(report);
 
             // Log update
-            reportUpdateRepository.save(new ReportUpdate(report, "Resolved",
+            reportUpdateRepository.save(new ReportUpdate(report, "PendingVerification",
                     "Staff has fixed the issue and uploaded proof. Awaiting citizen verification."));
 
             // Notify the citizen
@@ -169,16 +169,17 @@ public class ReportController {
         }).orElse(ResponseEntity.notFound().build());
     }
 
-    // ── USER: Verify & close ticket (with GPS check) ─────────────────────────
+    // ── USER: Verify & resolve ticket (with optional GPS check) ───────────────
     @PutMapping("/{id}/verify")
     public ResponseEntity<?> verifyReport(
             @PathVariable Long id,
-            @RequestParam("userLat") Double userLat,
-            @RequestParam("userLng") Double userLng) {
+            @RequestParam(value = "userLat", required = false) Double userLat,
+            @RequestParam(value = "userLng", required = false) Double userLng) {
 
         return reportRepository.findById(id).map(report -> {
-            // Validate user is within 200m of the issue
-            if (report.getLatitude() != null && report.getLongitude() != null) {
+            // Validate user is within 200m of the issue (only if coords provided and report
+            // has coords)
+            if (userLat != null && userLng != null && report.getLatitude() != null && report.getLongitude() != null) {
                 double distMeters = haversineDistance(
                         report.getLatitude(), report.getLongitude(), userLat, userLng);
                 if (distMeters > 200) {
@@ -189,19 +190,20 @@ public class ReportController {
             }
 
             report.setIsVerified(true);
-            report.setStatus("Closed");
+            report.setStatus("Resolved");
             Report saved = reportRepository.save(report);
 
-            // Award coins
+            // Award coins (null-safe for users created before civic_coins column)
             User user = report.getUser();
-            user.setCivicCoins(user.getCivicCoins() + 50);
+            int currentCoins = user.getCivicCoins() != null ? user.getCivicCoins() : 0;
+            user.setCivicCoins(currentCoins + 50);
             userRepository.save(user);
 
             reportUpdateRepository.save(
-                    new ReportUpdate(report, "Closed", "Citizen verified the fix at the location. Ticket closed."));
+                    new ReportUpdate(report, "Resolved", "Citizen verified the fix at the location. Issue resolved!"));
             notificationRepository.save(new Notification(user,
                     "You've verified TKT-" + String.format("%03d", report.getId())
-                            + " and earned 50 CC! Ticket is now closed."));
+                            + " and earned 50 CC! Issue is now officially Resolved."));
 
             return ResponseEntity.ok(saved);
         }).orElse(ResponseEntity.notFound().build());

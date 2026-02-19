@@ -28,10 +28,27 @@ const StaffMyTasks = () => {
       setLoading(false);
       return;
     }
+    const statusOrder = (s) => {
+      const sl = s?.toLowerCase();
+      if (sl === "open" || sl === "pending") return 0;
+      if (
+        sl === "progress" ||
+        sl === "in progress" ||
+        sl === "pendingverification"
+      )
+        return 1;
+      if (sl === "resolved" || sl === "solved") return 2;
+      return 3;
+    };
     axios
       .get(`http://localhost:8080/api/reports/staff/${user.id}`)
       .then((r) => {
-        if (Array.isArray(r.data)) setTasks(r.data);
+        if (Array.isArray(r.data))
+          setTasks(
+            [...r.data].sort(
+              (a, b) => statusOrder(a.status) - statusOrder(b.status),
+            ),
+          );
       })
       .catch((e) => console.error(e))
       .finally(() => setLoading(false));
@@ -39,38 +56,42 @@ const StaffMyTasks = () => {
 
   const getStatusStyle = (s) => {
     const sl = s?.toLowerCase();
-    if (sl === "closed")
-      return "bg-slate-700/40 text-slate-300 border-slate-600/40";
     if (sl === "resolved")
-      return "bg-emerald-900/30 text-emerald-400 border-emerald-700/30";
-    return "bg-amber-900/30 text-amber-400 border-amber-700/30";
+      return "bg-emerald-50 text-emerald-700 border-emerald-200";
+    if (sl === "pendingverification")
+      return "bg-blue-50 text-blue-700 border-blue-200";
+    return "bg-amber-50 text-amber-700 border-amber-200";
   };
 
   const getStatusIcon = (s) => {
     const sl = s?.toLowerCase();
-    if (sl === "closed" || sl === "resolved") return <CheckCircle2 size={12} />;
+    if (sl === "resolved") return <CheckCircle2 size={12} />;
+    if (sl === "pendingverification") return <AlertCircle size={12} />;
     return <Clock size={12} />;
   };
 
-  const formatStatus = (s) =>
-    s === "Progress" ? "IN PROGRESS" : s?.toUpperCase() || "ASSIGNED";
+  const formatStatus = (s) => {
+    if (s === "Progress") return "IN PROGRESS";
+    if (s === "PendingVerification") return "AWAITING VERIFY";
+    return s?.toUpperCase() || "ASSIGNED";
+  };
 
   return (
     <div className="space-y-6">
       <div>
-        <h1 className="text-3xl font-black text-white tracking-tight">
+        <h1 className="text-3xl font-black text-slate-900 tracking-tight">
           My Tasks
         </h1>
-        <p className="text-slate-400 text-sm mt-1">
+        <p className="text-slate-500 text-sm mt-1">
           {tasks.length} reports assigned to you
         </p>
       </div>
 
-      <div className="bg-slate-900 border border-slate-800 rounded-[2rem] overflow-hidden">
+      <div className="bg-white border border-slate-100 rounded-[2rem] overflow-hidden shadow-sm">
         <div className="overflow-x-auto">
           <table className="w-full text-left">
             <thead>
-              <tr className="border-b border-slate-800">
+              <tr className="border-b border-slate-100">
                 <th className="px-6 py-4 text-[10px] font-black text-slate-500 uppercase tracking-widest">
                   Ticket
                 </th>
@@ -88,12 +109,12 @@ const StaffMyTasks = () => {
                 </th>
               </tr>
             </thead>
-            <tbody className="divide-y divide-slate-800">
+            <tbody className="divide-y divide-slate-100">
               {loading ? (
                 <tr>
                   <td colSpan="5" className="px-6 py-20 text-center">
                     <div className="flex flex-col items-center gap-3 text-slate-500">
-                      <div className="w-8 h-8 border-4 border-violet-600 border-t-transparent rounded-full animate-spin" />
+                      <div className="w-8 h-8 border-4 border-blue-600 border-t-transparent rounded-full animate-spin" />
                       <p className="text-sm font-bold">Loading tasks...</p>
                     </div>
                   </td>
@@ -118,13 +139,13 @@ const StaffMyTasks = () => {
                   <tr
                     key={r.id}
                     onClick={() => navigate(`/staff/reports/${r.id}`)}
-                    className="hover:bg-slate-800/40 transition-all cursor-pointer group"
+                    className="hover:bg-blue-50/30 transition-all cursor-pointer group"
                   >
                     <td className="px-6 py-5">
-                      <p className="text-sm font-bold text-slate-200 group-hover:text-white">
+                      <p className="text-sm font-bold text-slate-800 group-hover:text-slate-900">
                         {r.title}
                       </p>
-                      <p className="text-[10px] text-slate-600 font-bold mt-0.5">
+                      <p className="text-[10px] text-slate-500 font-bold mt-0.5">
                         TKT-{String(r.id).padStart(3, "0")}
                       </p>
                     </td>
@@ -134,7 +155,7 @@ const StaffMyTasks = () => {
                       </p>
                     </td>
                     <td className="px-6 py-5">
-                      <span className="bg-slate-800 text-slate-400 px-3 py-1 rounded-lg text-[10px] font-bold uppercase">
+                      <span className="bg-slate-100 text-slate-600 px-3 py-1 rounded-lg text-[10px] font-bold uppercase">
                         {r.category}
                       </span>
                     </td>
@@ -149,7 +170,7 @@ const StaffMyTasks = () => {
                     <td className="px-6 py-5 text-right">
                       <ArrowRight
                         size={16}
-                        className="text-slate-600 group-hover:text-violet-400 transition-colors ml-auto"
+                        className="text-slate-400 group-hover:text-blue-600 transition-colors ml-auto"
                       />
                     </td>
                   </tr>
