@@ -8,17 +8,6 @@ import org.slf4j.LoggerFactory;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-/**
- * ChatController — exposes the single chatbot endpoint.
- *
- * POST /api/chat
- * Request : { "message": "...", "userId": 5 }
- * Response : { "reply": "..." }
- *
- * Authentication is intentionally kept simple for now.
- * When JWT is added, extract userId from the token here instead
- * of trusting the request body.
- */
 @RestController
 @RequestMapping("/api/chat")
 public class ChatController {
